@@ -5,48 +5,44 @@
 </head>
 <body>
 
-
-<!--
-Test Page working with the cherrypy map_server
--->
-
 <script src="js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/leaflet.js"></script>
 <link rel="stylesheet" type="text/css" href="css/leaflet.css"/>
 <link rel="stylesheet" type="text/css" href="css/test-page.css"/>
 
 <div id="map_title"></div>
-<div id="map_container">
-	
-</div>
+<div id="map_container"></div>
 
 <script type="text/javascript">
 
-	
+	var server = '127.0.0.1';
+	var port = '8081';
 
-	var server = '127.0.0.1'
-	var port = '8081'
-	var areapath= ''
+	var displayoptions;
+	var areaname;
+	var areapath;
 
-	var display_options = {};
-	var area = ''
+	function initiate_map(data) {
 
-	$(document).ready(function () {
-
-		$.getJSON('http://'+server+":"+port+'/getparams', function(data){
-			
-			display_options = data.display_options;
-			area = data.area;
-			areapath = data.areapath;
-
-		})
+		displayoptions = data.displayoptions;
+		area = data.area;
+		areapath = data.areapath;
 
 		$("#map_title").html("<h1>"+area+"</h1>");
 
-		var map = L.map('map_container').setView(display_options.centercoords, display_options.zoomlevel);
+		var map = L.map('map_container').setView(displayoptions.centercoords, displayoptions.zoomlevel);
 
 		var tilesPath = 'http://'+server+':'+port+'static/maptiles/'+areapath+'/{z}/{x}/{y}.png';
 
-		L.tileLayer(tilesPath, {maxZoom: display_options.maxZoom, minZoom: display_options.minZoom}).addTo(map);
+		L.tileLayer(tilesPath, {maxZoom: displayoptions.maxZoom, minZoom: displayoptions.minZoom}).addTo(map);
 	};
+
+	$(document).ready(function () {
+
+		$.getJSON('http://'+server+":"+port+'/get_map_params', function(data) {
+			initiate_map(data);
+		});
+	});
 </script>
+</body>
+</html>
